@@ -1,0 +1,44 @@
+name: C++ Linting
+
+on:
+  push:
+    paths:
+      - '**.cpp'
+      - '**.hpp'
+      - '**.h'
+      - '.github/workflows/cpp.yml'
+  pull_request:
+    paths:
+      - '**.cpp'
+      - '**.hpp'
+      - '**.h'
+      - '.github/workflows/cpp.yml'
+
+jobs:
+  cpp-lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Run clang-format check
+        run: |
+          cd ${{github.workspace}}
+          # Create a list of C++ files
+          find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' | grep -v "build/" > cpp_files.txt
+          
+          if [ -s cpp_files.txt ]; then
+            # Format files in-place
+            clang-format -i $(cat cpp_files.txt)
+            
+            # Check if any files were modified
+            if ! git diff --exit-code --color; then
+              echo "Code style issues found. Please run 'clang-format -i' locally and commit the changes."
+              exit 1
+            fi
+          else
+            echo "No C++ files found for formatting check."
+          fi

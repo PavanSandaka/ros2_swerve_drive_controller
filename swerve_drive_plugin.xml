@@ -1,0 +1,9 @@
+<library path="swerve_drive_controller">
+  <class name="swerve_drive_controller/SwerveController"
+         type="swerve_drive_controller::SwerveController"
+         base_class_type="controller_interface::ControllerInterface">
+    <description>
+      ROS2 Controller For 3-Wheeled Swerve Drive Robot.
+    </description>
+  </class>
+</library>
